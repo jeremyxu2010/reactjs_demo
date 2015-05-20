@@ -11,16 +11,21 @@
 
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var TodoConstants = require('../constants/TodoConstants');
+var webapi = require('../webapi/webapi');
 
 var TodoActions = {
 
   /**
    * @param  {string} text
    */
-  create: function(text) {
-    AppDispatcher.dispatch({
-      actionType: TodoConstants.TODO_CREATE,
-      text: text
+  create: function(text, errorCb) {
+    webapi.sendRequest({}, function(resp){
+      AppDispatcher.dispatch({
+        actionType: TodoConstants.TODO_CREATE,
+        text: text
+      });
+    }, function(resp){
+      errorCb(resp.msg);
     });
   },
 
@@ -28,11 +33,15 @@ var TodoActions = {
    * @param  {string} id The ID of the ToDo item
    * @param  {string} text
    */
-  updateText: function(id, text) {
-    AppDispatcher.dispatch({
-      actionType: TodoConstants.TODO_UPDATE_TEXT,
-      id: id,
-      text: text
+  updateText: function(id, text, errorCb) {
+    webapi.sendRequest({}, function(resp){
+      AppDispatcher.dispatch({
+        actionType: TodoConstants.TODO_UPDATE_TEXT,
+        id: id,
+        text: text
+      });
+    }, function(resp){
+      errorCb(resp.msg);
     });
   },
 
@@ -40,43 +49,59 @@ var TodoActions = {
    * Toggle whether a single ToDo is complete
    * @param  {object} todo
    */
-  toggleComplete: function(todo) {
-    var id = todo.id;
-    var actionType = todo.complete ?
-        TodoConstants.TODO_UNDO_COMPLETE :
-        TodoConstants.TODO_COMPLETE;
+  toggleComplete: function(todo, errorCb) {
+    webapi.sendRequest({}, function(resp){
+      var id = todo.id;
+      var actionType = todo.complete ?
+          TodoConstants.TODO_UNDO_COMPLETE :
+          TodoConstants.TODO_COMPLETE;
 
-    AppDispatcher.dispatch({
-      actionType: actionType,
-      id: id
+      AppDispatcher.dispatch({
+        actionType: actionType,
+        id: id
+      });
+    }, function(resp){
+      errorCb(resp.msg);
     });
   },
 
   /**
    * Mark all ToDos as complete
    */
-  toggleCompleteAll: function() {
-    AppDispatcher.dispatch({
-      actionType: TodoConstants.TODO_TOGGLE_COMPLETE_ALL
+  toggleCompleteAll: function(errorCb) {
+    webapi.sendRequest({}, function(resp){
+      AppDispatcher.dispatch({
+        actionType: TodoConstants.TODO_TOGGLE_COMPLETE_ALL
+      });
+    }, function(resp){
+      errorCb(resp.msg);
     });
   },
 
   /**
    * @param  {string} id
    */
-  destroy: function(id) {
-    AppDispatcher.dispatch({
-      actionType: TodoConstants.TODO_DESTROY,
-      id: id
+  destroy: function(id, errorCb) {
+    webapi.sendRequest({}, function(resp){
+      AppDispatcher.dispatch({
+        actionType: TodoConstants.TODO_DESTROY,
+        id: id
+      });
+    }, function(resp){
+      errorCb(resp.msg);
     });
   },
 
   /**
    * Delete all the completed ToDos
    */
-  destroyCompleted: function() {
-    AppDispatcher.dispatch({
-      actionType: TodoConstants.TODO_DESTROY_COMPLETED
+  destroyCompleted: function(errorCb) {
+    webapi.sendRequest({}, function(resp){
+      AppDispatcher.dispatch({
+        actionType: TodoConstants.TODO_DESTROY_COMPLETED
+      });
+    }, function(resp){
+      errorCb(resp.msg);
     });
   }
 

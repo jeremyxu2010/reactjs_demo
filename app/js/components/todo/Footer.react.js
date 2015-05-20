@@ -22,18 +22,15 @@ var Footer = React.createClass({
    */
   render: function() {
     var allTodos = this.props.allTodos;
-    var total = Object.keys(allTodos).length;
+    var total = allTodos.size;
 
     if (total === 0) {
       return null;
     }
 
-    var completed = 0;
-    for (var key in allTodos) {
-      if (allTodos[key].complete) {
-        completed++;
-      }
-    }
+    var completed = allTodos.filter(function (todo) {
+      return todo.get('complete');
+    }).size;
 
     var itemsLeft = total - completed;
     var itemsLeftPhrase = itemsLeft === 1 ? ' item ' : ' items ';
@@ -67,7 +64,9 @@ var Footer = React.createClass({
    * Event handler to delete all completed TODOs
    */
   _onClearCompletedClick: function() {
-    TodoActions.destroyCompleted();
+    TodoActions.destroyCompleted(function(errorMsg){
+        this.props.showErrorMsg(errorMsg);
+      }.bind(this));
   }
 
 });

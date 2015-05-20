@@ -38,7 +38,7 @@ var TodoItem = React.createClass({
         <TodoTextInput
           className="edit"
           onSave={this._onSave}
-          value={todo.text}
+          value={todo.get('text')}
         />;
     }
 
@@ -50,7 +50,7 @@ var TodoItem = React.createClass({
     return (
       <li
         className={cx({
-          'completed': todo.complete,
+          'completed': todo.get('complete'),
           'editing': this.state.isEditing
         })}
         key={todo.id}>

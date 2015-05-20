@@ -25,16 +25,18 @@ var MainSection = React.createClass({
   render: function() {
     // This section should be hidden by default
     // and shown when there are todos.
-    if (Object.keys(this.props.allTodos).length < 1) {
+    if (this.props.allTodos.size < 1) {
       return null;
     }
 
     var allTodos = this.props.allTodos;
     var todos = [];
 
-    for (var key in allTodos) {
-      todos.push(<TodoItem key={key} todo={allTodos[key]} />);
-    }
+    var that = this;
+
+    allTodos.forEach(function (todo) {
+      todos.push(<TodoItem key={todo.get('id')} todo={todo} showErrorMsg={that.props.showErrorMsg}/>);
+    });
 
     return (
       <section className="main">
@@ -54,7 +56,9 @@ var MainSection = React.createClass({
    * Event handler to mark all TODOs as complete
    */
   _onToggleCompleteAll: function() {
-    TodoActions.toggleCompleteAll();
+    TodoActions.toggleCompleteAll(function(errorMsg){
+        this.props.showErrorMsg(errorMsg);
+      }.bind(this));
   }
 
 });

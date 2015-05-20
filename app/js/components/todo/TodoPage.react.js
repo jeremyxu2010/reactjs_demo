@@ -22,26 +22,31 @@ var Alert = require('react-bootstrap').Alert;
 var OverlayMixin = require('react-bootstrap').OverlayMixin;
 var Modal = require('react-bootstrap').Modal;
 var Button = require('react-bootstrap').Button;
-var assign = require('object-assign');
-
-/**
- * Retrieve the current TODO data from the TodoStore
- */
-function getTodoState() {
-  return {
-    allTodos: TodoStore.getAll(),
-    areAllComplete: TodoStore.areAllComplete()
-  };
-}
+var _ = require('lodash');
 
 var TodoPage = React.createClass({
 
   mixins: [OverlayMixin],
 
+  /**
+   * Retrieve the current TODO data from the TodoStore
+   */
+  getTodoState: function(){
+    return {
+      allTodos: TodoStore.getAll(),
+      areAllComplete: TodoStore.areAllComplete()
+    };
+  },
+
   toggleErrorMsgDlg : function() {
     this.setState({
       isModalOpen: !this.state.isModalOpen
     });
+  },
+
+  showErrorMsg : function(msg){
+    this.setState({errorMsg: msg});
+    this.toggleErrorMsgDlg();
   },
 
   // This is called by the `OverlayMixin` when this component
@@ -64,7 +69,7 @@ var TodoPage = React.createClass({
   },
 
   getInitialState: function() {
-    return assign({}, getTodoState(), {isModalOpen: false, errorMsg: ''});
+    return _.assign({}, this.getTodoState(), {isModalOpen: false, errorMsg: ''});
   },
 
   componentDidMount: function() {
@@ -83,12 +88,12 @@ var TodoPage = React.createClass({
         <div id="todopage">
           <section>
             <div>
-              <Header />
+              <Header showErrorMsg={this.showErrorMsg}/>
               <MainSection
                   allTodos={this.state.allTodos}
                   areAllComplete={this.state.areAllComplete}
-                  />
-              <Footer allTodos={this.state.allTodos} />
+                  showErrorMsg={this.showErrorMsg}/>
+              <Footer allTodos={this.state.allTodos} showErrorMsg={this.showErrorMsg}/>
             </div>
           </section>
           <span>This is Todo Page, go to <Link to="about">About</Link> Page</span>
@@ -99,15 +104,8 @@ var TodoPage = React.createClass({
   /**
    * Event handler for 'change' events coming from the TodoStore
    */
-  _onChange: function(result) {
-    if(result.success) {
-      this.setState(getTodoState());
-    } else {
-      this.setState({
-        errorMsg: result.msg
-      });
-      this.toggleErrorMsgDlg();
-    }
+  _onChange: function() {
+    this.setState(this.getTodoState());
   }
 
 });

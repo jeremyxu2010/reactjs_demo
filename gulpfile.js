@@ -37,14 +37,14 @@ gulp.task('browserify',function(){
 });
 
 gulp.task('less', function(){
-    gulp.src(['./app/less/demo2.less'], {base: './'})
+    gulp.src('./app/less/demo2.less')
     .pipe(gulpif(!env_prod, sourcemaps.init({loadMaps: !env_prod})))
     .pipe(less({
       paths: [ path.join(__dirname, './app/less/includes') ],
     }))
     .pipe(autoprefixer().on('error', gutil.log))
     .pipe(gulpif(env_prod, minifyCSS().on('error', gutil.log)))
-    .pipe(gulpif(!env_prod, sourcemaps.write('./maps')))
+    .pipe(gulpif(!env_prod, sourcemaps.write('./maps', {sourceRoot: '/source/app/less/'})))
     .pipe(gulp.dest('./dist/css'));
 });
 

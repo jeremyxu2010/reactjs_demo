@@ -44,10 +44,31 @@ var config = {
                 /\.\/components\/.*\.jsx$/
             ],
             loader: "react-router-proxy"
+        }, {
+            test: /\.less$/,
+            loader: "style!css!autoprefixer!less"
+        }, {
+            test: /\.woff$/,
+            loader: "url-loader?limit=10000&minetype=application/font-woff"
+        }, {
+            test: /\.woff2$/,
+            loader: "url-loader?limit=10000&minetype=application/font-woff"
+        }, {
+            test: /\.ttf$/,
+            loader: "file-loader"
+        }, {
+            test: /\.eot$/,
+            loader: "file-loader"
+        }, {
+            test: /\.svg$/,
+            loader: "file-loader"
+        }, {
+            test: /\.(png|jpg|gif)$/,
+            loader: 'url-loader?limit=8192'
         }],
     },
     resolve: {
-        extensions: ['', '.js', '.jsx']
+        extensions: ['', '.js', '.jsx', '.less', '.css']
     }
 };
 

@@ -1,3 +1,5 @@
+require("!style!css!less!../less/main.less");
+
 var React = require('react');
 var ReactRouter = require('react-router');
 var TodoPage = require('react-router-proxy!./components/todo/TodoPage.react'); 

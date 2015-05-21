@@ -1,13 +1,6 @@
 var gulp = require('gulp'),
     connect = require('gulp-connect'),
-    source = require('vinyl-source-stream'),
-    buffer = require('vinyl-buffer'),
     gulpif = require('gulp-if'),
-    uglify = require('gulp-uglify'),
-    less = require('gulp-less'),
-    sourcemaps = require('gulp-sourcemaps'),
-    autoprefixer = require('gulp-autoprefixer'),
-    minifyCSS = require('gulp-minify-css'),
     path = require('path'),
     gutil = require('gulp-util'),
     del = require('del'),
@@ -22,7 +15,14 @@ gulp.task('clean', del.bind(
 ));
 
 gulp.task('webpack_compile',function(){
-    webpack(require(env_prod ? './webpack.production.config' : './webpack.config'), gutil.log);
+    webpack(require(env_prod ? './webpack.production.config' : './webpack.config'), function (err, stats) {
+        if(err) throw new gutil.PluginError("webpack", err);
+        gutil.log("[webpack]", stats.toString({
+            verbose: true,
+            version: false,
+            timings: true
+        }));
+    });
 });
 
 gulp.task('copy_html', function(){

@@ -1,15 +1,14 @@
 var React = require('react');
 var ReactRouter = require('react-router');
-var TodoPage = require('./todo/TodoPage.react.js');
-var AboutPage = require('./about/AboutPage.react.js');
+var TodoPage = require('react-router-proxy!./components/todo/TodoPage.react'); 
+var AboutPage = require('react-router-proxy!./components/about/AboutPage.react');
 
 var Route = ReactRouter.Route;
 var DefaultRoute = ReactRouter.DefaultRoute;
 
-
 var RouteHandler = ReactRouter.RouteHandler;
 
-var Demo2App = React.createClass({
+var App = React.createClass({
     render: function() {
         return (
             <RouteHandler/>
@@ -19,17 +18,18 @@ var Demo2App = React.createClass({
 
 // declare our routes and their hierarchy
 var routes = (
-    <Route handler={Demo2App}>
+    <Route handler={App}>
         <Route name="todo" path="todo" handler={TodoPage}/>
         <Route name="about" path="about" handler={AboutPage}/>
-        <DefaultRoute name="default"  handler={TodoPage}/>
+        <DefaultRoute name="default" handler={TodoPage}/>
     </Route>
 );
 
-Demo2App.prototype.init = function () {
+App.prototype.init = function () {
     ReactRouter.run(routes, ReactRouter.HashLocation, function(Root){
         React.render(<Root/>, document.body);
     });
 };
 
-module.exports = Demo2App;
+var app = new App();
+app.init();

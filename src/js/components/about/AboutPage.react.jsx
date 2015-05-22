@@ -1,4 +1,4 @@
-require("!style!css!less!../../../less/about.less");
+require("../../../less/about.less");
 
 var React = require('react');
 var Link = require('react-router').Link;

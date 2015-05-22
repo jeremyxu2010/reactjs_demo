@@ -1,6 +1,5 @@
-require("style/url!file!../../node_modules/bootstrap/dist/css/bootstrap.min.css");
-
-require("!style!css!less!../less/main.less");
+require("../../node_modules/bootstrap/dist/css/bootstrap.min.css");
+require("../less/main.less");
 
 var React = require('react');
 var ReactRouter = require('react-router');

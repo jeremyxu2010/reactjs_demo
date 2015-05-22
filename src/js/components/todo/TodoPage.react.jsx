@@ -1,4 +1,4 @@
-require("!style!css!less!../../../less/todo.less");
+require("../../../less/todo.less");
 
 /**
  * Copyright (c) 2014-2015, Facebook, Inc.

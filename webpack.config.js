@@ -1,5 +1,7 @@
 var webpack = require("webpack");
 
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+
 module.exports = function(env_prod){
     var output_options = {
         path: './dist/assets/',
@@ -11,20 +13,19 @@ module.exports = function(env_prod){
         output_options.sourceMapFilename = 'maps/[name].js.map';
     }
 
-    var plugins_options = [];
+    var plugins_options = [new ExtractTextPlugin('[name].css')];
     if(env_prod){
-        plugins_options = [
-            new webpack.optimize.UglifyJsPlugin({
-                compress: {
-                    warnings: false
-                }
-            }),
-            new webpack.DefinePlugin({
-                "process.env": {
-                    NODE_ENV: JSON.stringify("production")
-                }
-            })
-        ];
+        plugins_options.push(new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                warnings: false
+            }
+        }));
+
+        plugins_options.push(new webpack.DefinePlugin({
+            "process.env": {
+                NODE_ENV: JSON.stringify("production")
+            }
+        }));
     }
 
     var postLoaders_options = [];
@@ -64,8 +65,11 @@ module.exports = function(env_prod){
                 ],
                 loader: "react-router-proxy"
             }, {
+                test: /\.css$/,
+                loader: ExtractTextPlugin.extract("style-loader", "css-loader!autoprefixer-loader")
+            },{
                 test: /\.less$/,
-                loader: "style!css!autoprefixer!less"
+                loader: ExtractTextPlugin.extract("style-loader", "css-loader!autoprefixer-loader!less-loader")
             }, {
                 test: /\.woff$/,
                 loader: "url-loader?limit=10000&minetype=application/font-woff"
@@ -87,7 +91,7 @@ module.exports = function(env_prod){
             }],
         },
         resolve: {
-            extensions: ['', '.js', '.jsx', 'less', 'css']
+            extensions: ['', '.js', '.jsx']
         }
     };
 };

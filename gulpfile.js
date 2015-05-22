@@ -10,11 +10,11 @@ var gulp = require('gulp'),
 var env_prod = process.env.NODE_ENV === 'production';
 
 // Clean output directory
-gulp.task('clean', del.bind(
-  null, ['dist/*', '!dist/.git'], {dot: true}
-));
+gulp.task('clean', function(cb){
+    del(['./dist/*', '!./dist/.git'], cb);
+});
 
-gulp.task('webpack_compile',function(){
+gulp.task('webpack_compile', ['clean'], function(cb){
     webpack(require('./webpack.config')(env_prod), function (err, stats) {
         if(err) throw new gutil.PluginError("webpack", err);
         gutil.log("[webpack]", stats.toString({
@@ -22,41 +22,37 @@ gulp.task('webpack_compile',function(){
             version: false,
             timings: true
         }));
+        cb();
     });
 });
 
-gulp.task('copy_html', function(){
+gulp.task('copy_html', ['webpack_compile'], function(){
     gulp.src(['./src/**/*.html'])
     .pipe(gulp.dest('./dist'));
 });
 
 // live reload 
-gulp.task('connect',function(){
+gulp.task('connect', ['copy_html'], function(){
     connect.server({
         root: './dist',
         port: port,
-        livereload: true,
-    })
-})
+        livereload: true
+    });
+});
+
+
+gulp.task('watch', ['connect'], function(){
+    gulp.watch('./dist/**/*',['reload']);
+    gulp.watch(['./src/js/**/*.js', './src/js/**/*.jsx', './src/less/**/*.less' ], ['webpack_compile']);
+    gulp.watch(['./src/**/*.html'], ['copy_html']);
+});
 
 // reload
 gulp.task('reload',function(){
     gulp.src(['./dist/**/*'])
-    .pipe( connect.reload() )
+    .pipe( connect.reload() );
 });
 
-gulp.task('watch',function(){
-    gulp.watch('./dist/**/*',['reload']);
-    gulp.watch(['./src/js/**/*.js', './src/js/**/*.jsx', './src/less/**/*.less' ],['webpack_compile']);
-    gulp.watch(['./src/**/*.html'],['copy_html']);
-})
+gulp.task('default',['copy_html']);
 
-gulp.task('libs_compile', function(){
-    webpack(require('./webpack.libs.config'), gutil.log); 
-});
-
-gulp.task('prepare', ['clean', 'libs_compile']);
-
-gulp.task('default',['prepare', 'webpack_compile', 'copy_html']);
-
-gulp.task('serve',['prepare', 'webpack_compile', 'copy_html', 'connect','watch']);
+gulp.task('serve',['watch']);

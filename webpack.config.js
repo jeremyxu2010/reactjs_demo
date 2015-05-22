@@ -13,7 +13,7 @@ module.exports = function(env_prod){
         output_options.sourceMapFilename = 'maps/[name].js.map';
     }
 
-    var plugins_options = [new ExtractTextPlugin('[name].css')];
+    var plugins_options = [new webpack.optimize.CommonsChunkPlugin("vendor", "vendor.js"), new ExtractTextPlugin('[name].css')];
     if(env_prod){
         plugins_options.push(new webpack.optimize.UglifyJsPlugin({
             compress: {
@@ -37,20 +37,10 @@ module.exports = function(env_prod){
 
     return {
         entry: {
-            main: './src/js/main.jsx'
+            main: './src/js/main.jsx',
+            vendor: ['react', 'react-router', 'react-bootstrap', 'keymirror', 'flux', 'lodash', 'immutable', 'events', 'react-classset']
         },
         output: output_options,
-        externals: {
-            'react': 'window.libs.React',
-            'react-router': 'window.libs.ReactRouter',
-            'react-bootstrap': 'window.libs.ReactBootstrap',
-            'keymirror': 'window.libs.keyMirror',
-            'flux': 'window.libs.Flux',
-            'lodash': 'window.libs._',
-            'immutable': 'window.libs.Immutable',
-            'events': 'window.libs.Events',
-            'react-classset': 'window.libs.classSet'
-        },
         plugins: plugins_options,
         debug: !env_prod,
         devtool: (!env_prod)? 'source-map': null,

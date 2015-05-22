@@ -1,9 +1,11 @@
+require("style/url!file!../../node_modules/bootstrap/dist/css/bootstrap.min.css");
+
 require("!style!css!less!../less/main.less");
 
 var React = require('react');
 var ReactRouter = require('react-router');
-var TodoPage = require('react-router-proxy!./components/todo/TodoPage.react'); 
-var AboutPage = require('react-router-proxy!./components/about/AboutPage.react');
+var TodoPage = require('react-router-proxy?name=todo!./components/todo/TodoPage.react');
+var AboutPage = require('react-router-proxy?name=about!./components/about/AboutPage.react');
 
 var Route = ReactRouter.Route;
 var DefaultRoute = ReactRouter.DefaultRoute;

@@ -5,9 +5,11 @@ var config = {
         libs: './src/js/libs.js'
     },
     output: {
-        path: './dist/js/',
+        path: './dist/assets/',
         filename: '[name].js',
-        sourceMapFilename: 'maps/[name].js.map'
+        sourceMapFilename: 'maps/[name].js.map',
+        chunkFilename: '[name].js',
+        publicPath: '/assets/'
     },
     plugins: [
         new webpack.optimize.UglifyJsPlugin({

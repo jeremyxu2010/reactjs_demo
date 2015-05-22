@@ -15,7 +15,7 @@ gulp.task('clean', del.bind(
 ));
 
 gulp.task('webpack_compile',function(){
-    webpack(require(env_prod ? './webpack.production.config' : './webpack.config'), function (err, stats) {
+    webpack(require('./webpack.config')(env_prod), function (err, stats) {
         if(err) throw new gutil.PluginError("webpack", err);
         gutil.log("[webpack]", stats.toString({
             verbose: true,

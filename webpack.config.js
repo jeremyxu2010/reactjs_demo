@@ -9,11 +9,16 @@ module.exports = function(env_prod){
         chunkFilename: '[name].js',
         publicPath: '/assets/'
     };
-    if(!env_prod){
-        output_options.sourceMapFilename = 'maps/[name].js.map';
-    }
 
-    var plugins_options = [new webpack.optimize.CommonsChunkPlugin("vendor", "vendor.js"), new ExtractTextPlugin('[name].css')];
+    var plugins_options = [
+        new webpack.optimize.CommonsChunkPlugin("vendor", "vendor.js"),
+        new ExtractTextPlugin('[name].css', {allChunks: true})];
+    if(!env_prod){
+        plugins_options.push(new webpack.SourceMapDevToolPlugin({
+            test:      /\.(js|css)($|\?)/i,
+            filename: 'maps/[file].map'
+        }));
+    }
     if(env_prod){
         plugins_options.push(new webpack.optimize.UglifyJsPlugin({
             compress: {
@@ -38,12 +43,21 @@ module.exports = function(env_prod){
     return {
         entry: {
             main: './src/js/main.jsx',
-            vendor: ['react', 'react-router', 'react-bootstrap', 'keymirror', 'flux', 'lodash', 'immutable', 'events', 'react-classset']
+            vendor: [
+                'react',
+                'react-router',
+                'react-bootstrap',
+                'keymirror',
+                'flux',
+                'lodash',
+                'immutable',
+                'events',
+                'react-classset'
+            ]
         },
         output: output_options,
         plugins: plugins_options,
         debug: !env_prod,
-        devtool: (!env_prod)? 'source-map': null,
         module: {
             postLoaders: postLoaders_options,
             loaders: [{
@@ -61,20 +75,8 @@ module.exports = function(env_prod){
                 test: /\.less$/,
                 loader: ExtractTextPlugin.extract("style-loader", "css-loader!autoprefixer-loader!less-loader")
             }, {
-                test: /\.woff$/,
-                loader: "url-loader?limit=10000&minetype=application/font-woff"
-            }, {
-                test: /\.woff2$/,
-                loader: "url-loader?limit=10000&minetype=application/font-woff"
-            }, {
-                test: /\.ttf$/,
-                loader: "file-loader"
-            }, {
-                test: /\.eot$/,
-                loader: "file-loader"
-            }, {
-                test: /\.svg$/,
-                loader: "file-loader"
+                test: /\/fonts\/.*\.(woff|woff2|ttf|eot|svg)$/,
+                loader: "url-loader"
             }, {
                 test: /\.(png|jpg|gif)$/,
                 loader: 'url-loader?limit=8192'

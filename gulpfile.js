@@ -11,7 +11,7 @@ var env_prod = process.env.NODE_ENV === 'production';
 
 // Clean output directory
 gulp.task('clean', function(cb){
-    del(['./dist/*', '!./dist/.git'], cb);
+    del([__dirname + '/dist/*'], cb);
 });
 
 gulp.task('webpack_compile', ['clean'], function(cb){
@@ -27,14 +27,14 @@ gulp.task('webpack_compile', ['clean'], function(cb){
 });
 
 gulp.task('copy_html', ['webpack_compile'], function(){
-    gulp.src(['./src/**/*.html'])
-    .pipe(gulp.dest('./dist'));
+    gulp.src([__dirname + '/src/**/*.html'])
+    .pipe(gulp.dest(__dirname + '/dist'));
 });
 
 // live reload 
 gulp.task('connect', ['copy_html'], function(){
     connect.server({
-        root: './dist',
+        root: __dirname + '/dist',
         port: port,
         livereload: true
     });
@@ -42,14 +42,14 @@ gulp.task('connect', ['copy_html'], function(){
 
 
 gulp.task('watch', ['connect'], function(){
-    gulp.watch('./dist/**/*',['reload']);
-    gulp.watch(['./src/js/**/*.js', './src/js/**/*.jsx', './src/less/**/*.less' ], ['webpack_compile']);
-    gulp.watch(['./src/**/*.html'], ['copy_html']);
+    gulp.watch(__dirname + '/dist/**/*',['reload']);
+    gulp.watch([__dirname + '/src/js/**/*.js', __dirname + '/src/js/**/*.jsx', __dirname + '/src/less/**/*.less' ], ['webpack_compile']);
+    gulp.watch([__dirname + '/src/**/*.html'], ['copy_html']);
 });
 
 // reload
 gulp.task('reload',function(){
-    gulp.src(['./dist/**/*'])
+    gulp.src([__dirname + '/dist/**/*'])
     .pipe( connect.reload() );
 });
 

@@ -4,7 +4,7 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = function(env_prod){
     var output_options = {
-        path: './dist/assets/',
+        path: __dirname + '/dist/assets/',
         filename: '[name].js',
         chunkFilename: '[name].js',
         publicPath: '/assets/'
@@ -42,7 +42,7 @@ module.exports = function(env_prod){
 
     return {
         entry: {
-            main: './src/js/main.jsx',
+            main: __dirname + '/src/js/main.jsx',
             vendor: [
                 'react',
                 'react-router',
